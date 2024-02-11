@@ -8,7 +8,7 @@ import (
 type ConsoleReader struct {
 }
 
-func NewConsoleExecutor() *ConsoleReader {
+func NewConsoleReader() *ConsoleReader {
 	return &ConsoleReader{}
 }
 

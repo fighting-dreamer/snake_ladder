@@ -1,26 +1,52 @@
 package domain
 
+import (
+	"errors"
+	"fmt"
+)
+
 type Board struct {
-	Size    int
+	Size    int // one side of the board 's value example for 10X10 the size is 10
 	Snakes  map[int]int
 	Ladders map[int]int
 }
 
-func pairs2Map(pairs [][2]int) map[int]int {
-	res := map[int]int{}
-	for _, x := range pairs {
-		res[x[0]] = x[1]
+func NewBoard(size int) *Board {
+	return &Board{
+		Size:    size,
+		Snakes:  map[int]int{},
+		Ladders: map[int]int{},
 	}
-
-	return res
 }
 
-func NewBoard(size int, snakes [][2]int, ladders [][2]int) Board {
-	snakeMap := pairs2Map(snakes)
-	ladderMap := pairs2Map(ladders)
-	return Board{
-		Size:    size,
-		Snakes:  snakeMap,
-		Ladders: ladderMap,
+func (b *Board) IsValidPos(pos int) bool {
+	return pos > 0 && pos <= b.Size*b.Size
+}
+
+func (b *Board) IsSnakeStart(pos int) bool {
+	_, ok := b.Snakes[pos]
+	return ok
+}
+
+func (b *Board) IsLadderStart(pos int) bool {
+	_, ok := b.Ladders[pos]
+	return ok
+}
+
+func (b *Board) SnakeEndPos(pos int) (int, error) {
+	if b.IsSnakeStart(pos) {
+		return b.Snakes[pos], nil
 	}
+	return -1, errors.New(fmt.Sprintf("Snake does not start at %d", pos))
+}
+
+func (b *Board) LadderEndPos(pos int) (int, error) {
+	if b.IsLadderStart(pos) {
+		return b.Ladders[pos], nil
+	}
+	return -1, errors.New(fmt.Sprintf("Ladder does not start at %d", pos))
+}
+
+func (b *Board) HaveReachedEnd(pos int) bool {
+	return b.Size*b.Size == pos
 }
