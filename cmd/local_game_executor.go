@@ -56,11 +56,11 @@ func (lg *LocalGameExecutor) Execute() error {
 	nextIndex := func(index int, playerCnt int) int {
 		return (index + 1) % playerCnt
 	}
-
+Loop:
 	for {
 		select {
 		case <-lg.Done:
-			break
+			break Loop
 		default:
 			dice := lg.reader.ReadInt()
 			newPos := lg.game.Players[turnIndex].CurrentPos + dice
@@ -82,10 +82,8 @@ func (lg *LocalGameExecutor) Execute() error {
 			}
 			turnIndex = nextIndex(turnIndex, len(lg.game.Players))
 		}
-		fmt.Println("broke from the select statement")
-		break
 	}
-
+	fmt.Println("got out of the Loop")
 	// turnIndex points to the player that have reached end.
 	return nil
 }

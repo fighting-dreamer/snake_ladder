@@ -29,6 +29,7 @@ func main() {
 			i++
 		}
 	}()
+	
 	done <- struct{}{}
 	close(done)
 }
